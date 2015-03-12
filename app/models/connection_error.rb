@@ -1,0 +1,2 @@
+class ConnectionError < Error
+end
