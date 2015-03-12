@@ -28,7 +28,7 @@ class Connection
       req.headers['Authorization'] = api_token
     end
 
-    JSON.parse(response.body)['releases'].map do |args|
+    JSON.parse(response.body).with_indifferent_access[:releases].map do |args|
       Release.new args
     end
   end

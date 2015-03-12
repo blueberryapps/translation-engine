@@ -41,6 +41,14 @@ I18n.backend.releases
 # list all possible release which has same locale as I18n.locale
 I18n.backend.current_locale_releases
 ```
+### Switch release on frontend
+
+```slim
+- I18n.backend.current_locale_releases.each do |release|
+  = link_to release.version.upcase,
+            { translation_release: release.version },
+            class: ('active' if release.current? )
+```
 
 ## Screenshots Integration
 
