@@ -27,7 +27,10 @@ class Connection
       req.url '/api/v1/releases.json'
       req.headers['Authorization'] = api_token
     end
-    JSON.parse(response.body)['releases']
+
+    JSON.parse(response.body)['releases'].map do |args|
+      Release.new args
+    end
   end
 
   def get_release(version)
@@ -35,7 +38,9 @@ class Connection
       req.url "/api/v1/releases/#{version}.yaml"
       req.headers['Authorization'] = api_token
     end
+
     raise NotFound, "Release #{version} Not found" if response.status != 200
+
     response
   end
 
@@ -59,8 +64,8 @@ class Connection
     @connection ||= Faraday.new(:url => TranslationEngine.api_host) do |faraday|
       faraday.use ConnectionExceptionMiddleware
       faraday.adapter Faraday.default_adapter
-      faraday.options.timeout = 1
-      faraday.options.open_timeout = 2
+      faraday.options.timeout = 5
+      faraday.options.open_timeout = 20
     end
   end
 

@@ -26,15 +26,15 @@ namespace :translations_engine do
       releases_hash = Hash.new { |h, k| h[k] = [] }
 
       releases.each_with_object(releases_hash) do |release, hash|
-        hash[release['locale']] << release
+        hash[release.locale] << release
       end
 
       releases_hash.each do |locale, releases|
         puts "LOCALE: #{locale}"
         releases.each do |release|
-          print "  #{release['version']} - #{Time.parse(release['created_at'])}"
+          print "  #{release.version} - #{release.created_at}"
           print ' -> `rake translations_engine:pull:release '
-          puts "RELEASE=#{release['version']}`"
+          puts "RELEASE=#{release.version}`"
         end
       end
     end
