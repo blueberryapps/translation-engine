@@ -3,5 +3,5 @@ TranslationEngine.config do |config|
   config.api_host = 'http://127.0.0.1:3000'
   config.use_screenshots  = false
   config.use_catcher      = false
-  config.raise_exceptions = true
+  config.raise_exceptions = Rails.env.development?
 end

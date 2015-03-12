@@ -19,16 +19,16 @@ TranslationEngine.config do |config|
   # url to Translation Server
   config.api_host = 'http://127.0.0.1:3000'
 
-  # enable screenshot functionality
+  # enable screenshot functionality (default is false)
   config.use_screenshots  = true
 
   # enable to send translation after every request and receive translations
-  # when something changed
+  # when something changed (default is false)
   config.use_catcher      = true
 
   # If true TranslationEngine will throw exceptions on connection problems
   # If false TranslationEngine will just log exception to Rails.logger
-  config.raise_exceptions = true
+  config.raise_exceptions = Rails.env.development?
 end
 ```
 
@@ -47,7 +47,7 @@ I18n.backend.current_locale_releases
 - I18n.backend.current_locale_releases.each do |release|
   = link_to release.version.upcase,
             { translation_release: release.version },
-            class: ('active' if release.current? )
+            class: ('active' if release.current?)
 ```
 
 ## Screenshots Integration
