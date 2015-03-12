@@ -14,6 +14,9 @@ module TranslationEngine
         translation_engine/screenshots.css
         translation_engine/screenshots.js
       )
+      %w(stylesheets javascripts).each do |sub|
+        app.config.assets.paths << root.join('app', 'assets', sub).to_s
+      end
     end
 
     if !Rails.const_defined?('Console')
