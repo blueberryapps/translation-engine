@@ -19,7 +19,7 @@ class Backend < I18n::Backend::Simple
   end
 
   def releases
-    [master_release] | connection.get_releases
+    [Release.master] | connection.get_releases
   end
 
   def current_locale_releases
@@ -27,14 +27,6 @@ class Backend < I18n::Backend::Simple
   end
 
   protected
-
-  def master_release
-    Release.new(
-      version:    :master,
-      locale:     'all',
-      created_at: Time.now
-    )
-  end
 
   def connection
     @connection ||= Connection.new

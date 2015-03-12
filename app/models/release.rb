@@ -2,6 +2,14 @@ class Release
 
   attr_accessor :version, :locale, :created_at
 
+  def self.master
+    new(
+      version:    'master',
+      locale:     'all',
+      created_at: Time.now.to_s
+    )
+  end
+
   def initialize(args)
     @version    = args[:version]
     @locale     = args[:locale]
