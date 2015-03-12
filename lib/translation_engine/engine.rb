@@ -10,7 +10,10 @@ module TranslationEngine
     end
 
     initializer "translation_engine.assets.precompile" do |app|
-      app.config.assets.precompile += %w(screenshots.css screenshots.js)
+      app.config.assets.precompile += %w(
+        translation_engine/screenshots.css
+        translation_engine/screenshots.js
+      )
     end
 
     if !Rails.const_defined?('Console')
