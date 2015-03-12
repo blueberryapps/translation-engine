@@ -46,7 +46,7 @@ class CatcherMiddleware
     return if Translation.catched.empty?
 
     data = {
-      location:     URI.parse(env['REQUEST_URI']).path,
+      location:     env['PATH_INFO'],
       locale:       I18n.locale,
       translations: Translation.catched.uniq
     }
