@@ -1,7 +1,7 @@
 # TranslationEngine
 
 ```
-gem 'translation-engine', git: 'https://github.com/blueberryapps/translation-engine.git'
+gem 'translation_engine', git: 'https://github.com/blueberryapps/translation-engine.git'
 ```
 
 ## Configuration
