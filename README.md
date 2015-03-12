@@ -97,3 +97,15 @@ into config/locales/z_translation_engine.yml
 Download released translations from Translations server and store them
 into config/locales/z_releases/(release_locale).yml,
 will overwrite previous locale release, leaving allways only one release.
+
+## Architecture of service
+
+![Catcher](./readme/catcher.png)
+
+Catcher is middleware in rails APP which catches all used translations in page
+and then it sends them into Translation Server.
+
+![Screenshots](./readme/screenshots.png)
+
+Screenshots middleware takes highlights and images which sends into Translation
+Server.
