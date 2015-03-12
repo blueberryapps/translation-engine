@@ -40,8 +40,6 @@ class TranslationEngine
         @dismissScreenshotsOverlay()
 
   nextTranslationScreeshot: =>
-    console.log @translationsQueue
-    console.log @translationIndex
     if @translationsQueue.length > @translationIndex
       @renderHighlight()
     else
