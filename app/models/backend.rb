@@ -22,6 +22,10 @@ class Backend < I18n::Backend::Simple
     connection.get_releases
   end
 
+  def current_locale_releases
+    releases.select(&:current_locale?)
+  end
+
   protected
 
   def connection

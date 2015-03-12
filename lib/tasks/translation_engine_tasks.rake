@@ -1,4 +1,4 @@
-namespace :translations_engine do
+namespace :translation_engine do
   namespace :pull do
 
     desc 'Download all master translations from Translations server and ' +
@@ -10,7 +10,7 @@ namespace :translations_engine do
 
     desc 'Download released translations from Translations server and ' +
          'store them into config/locales/z_releases/LOCALE.yml, ' +
-         'will overwrite previous locale release, leving allways only one.'
+         'will overwrite previous locale release, leaving allways only one.'
     task release: :environment do
       Rails.logger = Logger.new(STDOUT)
       TranslationEngine::Downloader.new.store_release(ENV['RELEASE'])
@@ -33,7 +33,7 @@ namespace :translations_engine do
         puts "LOCALE: #{locale}"
         releases.each do |release|
           print "  #{release.version} - #{release.created_at}"
-          print ' -> `rake translations_engine:pull:release '
+          print ' -> `rake translation_engine:pull:release '
           puts "RELEASE=#{release.version}`"
         end
       end
