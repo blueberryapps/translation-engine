@@ -19,7 +19,7 @@ class ScreenshotsMiddleware
   def handle_translation_request(env)
     data = JSON.parse(env["rack.input"].read)
 
-    Connection.new.send_images(data)
+    Connection.new.send_images(data.merge(locale: I18n.locale))
 
     [
       200,
