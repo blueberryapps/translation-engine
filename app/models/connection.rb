@@ -64,8 +64,8 @@ class Connection
     @connection ||= Faraday.new(:url => TranslationEngine.api_host) do |faraday|
       faraday.use ConnectionExceptionMiddleware
       faraday.adapter Faraday.default_adapter
-      faraday.options.timeout = 5
-      faraday.options.open_timeout = 20
+      faraday.options.timeout      = TranslationEngine.timeout
+      faraday.options.open_timeout = TranslationEngine.timeout * 4
     end
   end
 

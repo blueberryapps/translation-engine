@@ -39,4 +39,45 @@ namespace :translation_engine do
       end
     end
   end
+
+  desc 'Send all translations from directory config/locales/LOCALE ' +
+       'to translations server'
+  task push: :environment do
+    locale = ENV['LOCALE'] || 'default'
+    puts "\nLOCALE: #{locale}"
+
+    TranslationEngine.timeout = 1000
+
+    def to_dotted_hash(hash, recursive_key = [])
+      hash.each_with_object({}) do |(k, v), ret|
+        key = recursive_key + [k]
+        if v.is_a? Hash
+          ret.merge! to_dotted_hash(v, key)
+        else
+          ret[key] = v
+        end
+      end
+    end
+    dir = Rails.root.join('config', 'locales')
+
+    Dir[dir.join "#{locale}/**/*.{yml}"].each do |file|
+      unless file.include?('faker')
+        hash = YAML.load_file(file)[locale] || {}
+        to_dotted_hash(hash).each do |keys, text|
+          Translation.catch text, keys
+        end
+      end
+    end
+
+    if Translation.catched.any?
+      data = {
+        locale:       locale,
+        translations: Translation.catched.uniq
+      }
+      puts "Send #{Translation.catched.size} translations"
+      Connection.new.send_translations(data)
+    else
+      puts "No translations was found and send"
+    end
+  end
 end
