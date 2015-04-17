@@ -62,7 +62,7 @@ namespace :translation_engine do
 
     Dir[dir.join "#{locale}/**/*.{yml}"].each do |file|
       unless file.include?('faker')
-        hash = YAML.load_file(file)[locale] || {}
+        hash = YAML.load_file(file) || {}
         to_dotted_hash(hash).each do |keys, text|
           Translation.catch text, keys
         end
