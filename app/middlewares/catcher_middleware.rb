@@ -55,6 +55,6 @@ class CatcherMiddleware
   end
 
   def translation_downloader
-    @translation_downloader ||= TranslationEngine::Downloader.new
+    @translation_downloader ||= Downloader.new
   end
 end
