@@ -184,6 +184,6 @@ class TranslationEngine
 $(document).ready ->
   window.TranslationEngine = new TranslationEngine('.translation_engine_start')
   
-  $("body").bind 'ajaxComplete', ->
+  $(window).bind 'ajaxComplete', ->
     window.TranslationEngine.lookupDom()
       
