@@ -85,7 +85,7 @@ class TranslationEngine
           key:     element.attr('title').replace('translation missing: ', '')
 
   findTranslationFromText: (text) ->
-    translations_regexp = /--TRANSLATION--([\w\_\-.]*)--/g
+    translations_regexp = /--TRANSLATION--(([\w\_.]|-(?!-))*)--/g
     translations_regexp.exec(text)
 
   setStatusText: (text) ->
@@ -183,7 +183,7 @@ class TranslationEngine
 
 $(document).ready ->
   window.TranslationEngine = new TranslationEngine('.translation_engine_start')
-  
+
   $(window).bind 'ajaxComplete', ->
     window.TranslationEngine.lookupDom()
-      
+
