@@ -17,7 +17,7 @@ class Translation
   end
 
   def self.normalize_for_translation_server(value)
-    if value.is_a?(Hash) || value.is_a?(Array) || value.is_a?(Symbol)
+    if value.is_a?(Array) || value.is_a?(Symbol)
       YAML.dump(value).gsub("---\n", '')
     else
       value
@@ -32,6 +32,7 @@ class Translation
     when Integer    then 'integer'
     when TrueClass  then 'boolean'
     when FalseClass then 'boolean'
+    when Symbol     then 'symbol'
     else nil
     end
   end
