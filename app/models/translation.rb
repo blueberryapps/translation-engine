@@ -26,10 +26,12 @@ class Translation
 
   def self.data_type(text)
     case text
-    when Array   then 'array'
-    when String  then 'string'
-    when Float   then 'float'
-    when Integer then 'integer'
+    when Array      then 'array'
+    when String     then 'string'
+    when Float      then 'float'
+    when Integer    then 'integer'
+    when TrueClass  then 'boolean'
+    when FalseClass then 'boolean'
     else nil
     end
   end
