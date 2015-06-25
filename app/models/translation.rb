@@ -9,6 +9,16 @@ class Translation
   end
 
   def self.catch(text, keys)
+    if text.is_a?(Hash)
+      text.each do |key, value|
+        Translation.catch(value, keys + [key])
+      end
+    else
+      catch_basic_value(text, keys)
+    end
+  end
+
+  def self.catch_basic_value(text, keys)
     catched << {
       data_type: data_type(text),
       key:       keys.join('.'),
@@ -17,7 +27,7 @@ class Translation
   end
 
   def self.normalize_for_translation_server(value)
-    if value.is_a?(Hash) || value.is_a?(Array) || value.is_a?(Symbol)
+    if value.is_a?(Array)
       YAML.dump(value).gsub("---\n", '')
     else
       value
@@ -26,10 +36,13 @@ class Translation
 
   def self.data_type(text)
     case text
-    when Array   then 'array'
-    when String  then 'string'
-    when Float   then 'float'
-    when Integer then 'integer'
+    when Array      then 'array'
+    when String     then 'string'
+    when Float      then 'float'
+    when Integer    then 'integer'
+    when TrueClass  then 'boolean'
+    when FalseClass then 'boolean'
+    when Symbol     then 'symbol'
     else nil
     end
   end
