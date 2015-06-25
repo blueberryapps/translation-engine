@@ -58,7 +58,7 @@ class Translation
   end
 
   def to_s
-    if TranslationEngine.use_screenshots
+    if TranslationEngine.use_screenshots && @text.is_a?(String)
       "--TRANSLATION--#{full_key}--#{@text}"
     else
       @text
