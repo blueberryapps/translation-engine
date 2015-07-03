@@ -1,4 +1,4 @@
-class Release
+class TranslationEngine::Release
 
   attr_accessor :version, :locale, :created_at
 

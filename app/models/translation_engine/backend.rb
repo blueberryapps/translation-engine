@@ -1,4 +1,4 @@
-class Backend < I18n::Backend::Simple
+class TranslationEngine::Backend < I18n::Backend::Simple
 
   IGNORE_KEYS = %i(faker order)
 
@@ -29,7 +29,7 @@ class Backend < I18n::Backend::Simple
   protected
 
   def connection
-    @connection ||= Connection.new
+    @connection ||= TranslationEngine::Connection.new
   end
 
   def download_master
@@ -65,14 +65,14 @@ class Backend < I18n::Backend::Simple
 
     case value
     when Array
-      Translation.catch(value, main_keys)
+      TranslationEngine::Translation.catch(value, main_keys)
       value.map { |v| enhance_translation(v, main_keys, false) }
     when Hash
       Hash[value.map { |k, v| [k, enhance_translation(v, main_keys + [k])] }]
     when String
-      Translation.new(value, main_keys).to_s
+      TranslationEngine::Translation.new(value, main_keys).to_s
     else
-      Translation.catch(value, main_keys) if catch_translation
+      TranslationEngine::Translation.catch(value, main_keys) if catch_translation
       value
     end
   end

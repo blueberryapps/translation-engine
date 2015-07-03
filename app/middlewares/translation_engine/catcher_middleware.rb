@@ -1,5 +1,6 @@
-class CatcherMiddleware
-
+class TranslationEngine::CatcherMiddleware
+  REMOVE_QUERY = /\?.*/
+  REPLACE_IDS = /\d+/
   def initialize(app)
     @app = app
   end
@@ -15,7 +16,7 @@ class CatcherMiddleware
   private
 
   def call_catcher(env)
-    Translation.clear_catched
+    TranslationEngine::Translation.clear_catched
 
     if env['QUERY_STRING'].include?('translation_release')
       I18n.backend.release = params(env)['translation_release']
@@ -43,18 +44,20 @@ class CatcherMiddleware
   end
 
   def send_translations(env)
-    return if Translation.catched.empty?
+    return if TranslationEngine::Translation.catched.empty?
+
+    location = env['PATH_INFO'].gsub(REMOVE_QUERY, '').gsub(REPLACE_IDS, ':id')
 
     data = {
-      location:     env['PATH_INFO'],
+      location:     location,
       locale:       I18n.locale,
-      translations: Translation.catched.uniq
+      translations: TranslationEngine::Translation.catched.uniq
     }
 
-    Connection.new.send_translations(data)
+    TranslationEngine::Connection.new.send_translations(data)
   end
 
   def translation_downloader
-    @translation_downloader ||= Downloader.new
+    @translation_downloader ||= TranslationEngine::Downloader.new
   end
 end

@@ -1,4 +1,4 @@
-class ConnectionExceptionMiddleware < Faraday::Middleware
+class TranslationEngine::ConnectionExceptionMiddleware < Faraday::Middleware
   def call(env)
     begin
       @app.call(env)
