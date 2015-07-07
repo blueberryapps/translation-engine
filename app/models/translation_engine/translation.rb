@@ -1,4 +1,4 @@
-class Translation
+class TranslationEngine::Translation
 
   def self.catched
     @catched ||= []
@@ -11,7 +11,7 @@ class Translation
   def self.catch(text, keys)
     if text.is_a?(Hash)
       text.each do |key, value|
-        Translation.catch(value, keys + [key])
+        TranslationEngine::Translation.catch(value, keys + [key])
       end
     else
       catch_basic_value(text, keys)

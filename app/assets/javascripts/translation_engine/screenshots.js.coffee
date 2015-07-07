@@ -85,14 +85,18 @@ class TranslationEngine
           key:     element.attr('title').replace('translation missing: ', '')
 
   findTranslationFromText: (text) ->
-    translations_regexp = /--TRANSLATION--(([\w\_.]|-(?!-))*)--/g
+    translations_regexp = /--TRANSLATION--(.*?)--/g
     translations_regexp.exec(text)
 
   setStatusText: (text) ->
     $('body').find('.screenshots-status').text(text)
+
+  windowLocation: ->
+    window.location.pathname.replace(/\?.*/, '').replace(/\d+/, ':id')
+
   sendTranslations: ->
     data = {
-      location:   window.location.pathname,
+      location:   @windowLocation(),
       images:     @screenshots,
       highlights: @highlights
     }
@@ -114,7 +118,7 @@ class TranslationEngine
 
     @setStatusText("Capturing #{translation.key} (#{@translationIndex}/#{@translationsQueue.length})")
 
-    image_name = window.location.pathname
+    image_name = @windowLocation()
 
     type = 'span'
 

@@ -1,6 +1,6 @@
 require 'fileutils'
 
-class Downloader
+class TranslationEngine::Downloader
 
   def self.etag?(etag)
     response = @current_etag == etag
@@ -41,7 +41,7 @@ class Downloader
   end
 
   def connection
-    @connection ||= Connection.new
+    @connection ||= TranslationEngine::Connection.new
   end
 
   def locale_dir

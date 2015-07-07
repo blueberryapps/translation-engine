@@ -1,6 +1,6 @@
 require 'faraday'
 
-class Connection
+class TranslationEngine::Connection
 
   NotFound = Class.new(Exception)
 
@@ -29,7 +29,7 @@ class Connection
     end
 
     JSON.parse(response.body).with_indifferent_access[:releases].map do |args|
-      Release.new args
+      TranslationEngine::Release.new args
     end
   end
 
@@ -62,7 +62,7 @@ class Connection
 
   def connection
     @connection ||= Faraday.new(:url => TranslationEngine.api_host) do |faraday|
-      faraday.use ConnectionExceptionMiddleware
+      faraday.use TranslationEngine::ConnectionExceptionMiddleware
       faraday.adapter Faraday.default_adapter
       faraday.options.timeout      = TranslationEngine.timeout
       faraday.options.open_timeout = TranslationEngine.timeout * 4
