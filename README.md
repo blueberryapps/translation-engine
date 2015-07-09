@@ -72,14 +72,14 @@ gem 'jquery-rails'
 Require stylesheets by inserting `app/assets/stylesheets/application.sass`:
 
 ```
-@import translation_engine/screenshots`
+@import 'translation_engine/screenshots'
 ```
 
-or in views `= stylesheets_include_tag 'translation_engine/screenshots'`
+or in views `= stylesheet_link_tag 'translation_engine/screenshots'`
 (this stylesheet is already precompiled, so you don't need to do anything else)
 
 ### Start translations screenshoting
-Create element with class `translation_engine_run`.
+Create element with class `translation_engine_start`.
 When you click on this element, Translation Engine will start screenshoting page
 and then sends all images + highlights to server `/transaltion_engine` which
 will be catched by `ScreenshotsMiddleware` and then send to TranslationServer.
