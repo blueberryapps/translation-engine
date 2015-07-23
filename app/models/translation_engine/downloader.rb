@@ -24,7 +24,7 @@ class TranslationEngine::Downloader
   end
 
   def store_release(release)
-    locale = release.split('_').first
+    locale = release.split('_')[0...-1].join('_')
     filename = releases_dir.join("#{locale.downcase}.yml")
     if (yml_data = connection.get_release(release).body)
       Rails.logger.info { "Storing release #{release} to #{filename}" }
