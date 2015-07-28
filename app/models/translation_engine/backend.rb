@@ -19,7 +19,7 @@ class TranslationEngine::Backend < I18n::Backend::Simple
   end
 
   def releases
-    [Release.master] | connection.get_releases
+    [TranslationEngine::Release.master] | connection.get_releases
   end
 
   def current_locale_releases
