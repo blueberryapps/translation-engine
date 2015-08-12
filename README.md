@@ -26,6 +26,9 @@ TranslationEngine.config do |config|
   # when something changed (default is false)
   config.use_catcher      = true
 
+  # Timeout for connecting to translation server
+  # config.timeout = 5
+
   # If true TranslationEngine will throw exceptions on connection problems
   # If false TranslationEngine will just log exception to Rails.logger
   config.raise_exceptions = Rails.env.development?

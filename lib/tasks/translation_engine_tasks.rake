@@ -20,7 +20,7 @@ namespace :translation_engine do
   namespace :list do
     desc 'List all available releases from Translations Server'
     task releases: :environment do
-      puts "Listing releases from: #{ENVied.TRANSLATIONS_API_HOST}"
+      puts "Listing releases from: #{TranslationEngine.api_host}"
       releases = TranslationEngine::Connection.new.get_releases
 
       releases_hash = Hash.new { |h, k| h[k] = [] }
