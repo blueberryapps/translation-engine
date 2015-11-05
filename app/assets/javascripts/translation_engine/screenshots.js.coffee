@@ -191,3 +191,4 @@ $(document).ready ->
   $(window).bind 'ajaxComplete', ->
     window.TranslationEngine.lookupDom()
 
+  $(document).trigger 'translation_engine:ready'
