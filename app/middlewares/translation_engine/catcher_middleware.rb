@@ -1,6 +1,7 @@
 class TranslationEngine::CatcherMiddleware
   REMOVE_QUERY = /\?.*/
   REPLACE_IDS = /\d+/
+
   def initialize(app)
     @app = app
   end
@@ -54,7 +55,7 @@ class TranslationEngine::CatcherMiddleware
       translations: TranslationEngine::Translation.catched.uniq
     }
 
-    TranslationEngine::Connection.new.send_translations(data)
+    Thread.new { TranslationEngine::Connection.new.send_translations(data) }
   end
 
   def translation_downloader
