@@ -1,3 +1,5 @@
+require 'faraday'
+
 class TranslationEngine::ConnectionExceptionMiddleware < Faraday::Middleware
   def call(env)
     begin
