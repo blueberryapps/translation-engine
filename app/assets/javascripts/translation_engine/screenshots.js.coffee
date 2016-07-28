@@ -2,22 +2,46 @@
 
 class TranslationEngine
 
+  baseUrl: '/translation_engine/keys'
   submitButton: ''
+  highlightButton: ''
   translationsQueue: []
   screenshots: []
   screenshotsCaptured: {}
   translationIndex: 0
+  keysVisible: false
+  keysInfoGenerated: false
   highlights: []
   variant: 'desktop'
 
-  constructor: (startButton) ->
+  constructor: (startButton, highlightButton) ->
     @startButton = $(startButton)
+    @highlightButton = $(highlightButton)
     @lookupDom()
     @bindStartButton()
+    @bindHighlightButton()
     @variant = 'mobile' if $('body').hasClass('mobile')
 
   start: ->
     setTimeout @nextTranslationScreeshot, 100
+
+  highlight: ->
+    baseUrl = @baseUrl
+    keysVisible = @keysVisible
+    @translationsQueue.map((translation) ->
+      # generate url
+      if !keysVisible
+        [ country, rest... ] = translation.key.split('.')
+        url = "#{baseUrl}/#{country}/translates/browse/all/#{rest.join('/')}"
+        translation['url'] = url
+        translation.backup = translation.element.html()
+        translation.element.html("<a href='#{url}' style='color: #444; background: #ddd'>#{translation.key}</a>")
+      else
+        translation.element.html(translation.backup)
+    )
+
+
+    @keysVisible = !@keysVisible
 
   appendScreenshotsOverlay: ->
     if $('body').find('.screenshots-overlay').length == 0
@@ -38,6 +62,10 @@ class TranslationEngine
         @appendScreenshotsOverlay()
         @setStatusText('Screenshots already send')
         @dismissScreenshotsOverlay()
+
+  bindHighlightButton: ->
+    @highlightButton.click =>
+      @highlight()
 
   nextTranslationScreeshot: =>
     if @translationsQueue.length > @translationIndex
@@ -103,7 +131,7 @@ class TranslationEngine
     @setStatusText('Sending translations')
 
     $.ajax(
-      url:  '/translation_engine',
+      url:  '/translation_engine/screenshots',
       type: 'POST',
       data: JSON.stringify(data),
       contentType: 'json'
@@ -186,7 +214,10 @@ class TranslationEngine
     , 1
 
 $(document).ready ->
-  window.TranslationEngine = new TranslationEngine('.translation_engine_start')
+  window.TranslationEngine = new TranslationEngine(
+    '.translation_engine_start',
+    '.translation_highlight_start'
+  )
 
   $(window).bind 'ajaxComplete', ->
     window.TranslationEngine.lookupDom()

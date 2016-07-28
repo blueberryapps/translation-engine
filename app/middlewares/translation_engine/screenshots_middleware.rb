@@ -1,6 +1,6 @@
 class TranslationEngine::ScreenshotsMiddleware
 
-  URL_PATH = /\A\/translation_engine/
+  URL_PATH = /\A\/translation_engine\/screenshots/
 
   def initialize(app)
     @app = app

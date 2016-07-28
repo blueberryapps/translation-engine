@@ -91,6 +91,16 @@ or
 
 Use callback `window.TranslationEngine.start()`
 
+### Show translations and keys + link to translation server
+Create element with class `translation_highlight_start`.
+
+When you click on this element, Translation Engine will show keys instead of text to all
+translated text in page and it will add link to translation server.
+
+or
+
+Use callback `window.TranslationEngine.highlight()`
+
 ## Rake tasks
 
 ### `rake translation_engine:list:releases`
