@@ -6,6 +6,7 @@ module TranslationEngine
 
     initializer "translation_engine.middlewares" do |app|
       app.config.app_middleware.use TranslationEngine::CatcherMiddleware
+      app.config.app_middleware.use TranslationEngine::KeysMiddleware
       app.config.app_middleware.use TranslationEngine::ScreenshotsMiddleware
     end
 
