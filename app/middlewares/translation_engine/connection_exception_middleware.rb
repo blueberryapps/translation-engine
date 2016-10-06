@@ -8,7 +8,7 @@ class TranslationEngine::ConnectionExceptionMiddleware < Faraday::Middleware
       message = "Connecting to TranslationServer got #{e.class}: #{e.message}"
 
       if TranslationEngine.raise_exceptions
-        raise ConnectionError, message
+        raise TranslationEngine::ConnectionError, message
       else
         Rails.logger.error { message }
         {}

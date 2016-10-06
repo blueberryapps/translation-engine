@@ -14,11 +14,19 @@ class TranslationEngine::Connection
   end
 
   def send_translations(data)
-    connection.post do |req|
-      req.url '/api/v1/translations'
-      req.headers['Content-Type']  = 'application/json'
-      req.headers['Authorization'] = api_token
-      req.body = data.to_json
+    Thread.new do
+      begin
+        puts "Sending translations in separate thread"
+        connection(60).post do |req|
+          req.url '/api/v1/translations'
+          req.headers['Content-Type']  = 'application/json'
+          req.headers['Authorization'] = api_token
+          req.body = data.to_json
+        end
+        puts "Sending translations in separate thread finished"
+      rescue StandardError => e
+        puts "Sending translations failed: #{e.class}: #{e.message}"
+      end
     end
   end
 
@@ -60,11 +68,11 @@ class TranslationEngine::Connection
 
   private
 
-  def connection
-    @connection ||= Faraday.new(:url => TranslationEngine.api_host) do |faraday|
+  def connection(timeout = TranslationEngine.timeout)
+    Thread.current[:translation_server_connection] ||= Faraday.new(:url => TranslationEngine.api_host) do |faraday|
       faraday.use TranslationEngine::ConnectionExceptionMiddleware
       faraday.adapter Faraday.default_adapter
-      faraday.options.timeout      = TranslationEngine.timeout
+      faraday.options.timeout      = timeout
       faraday.options.open_timeout = TranslationEngine.timeout * 4
     end
   end
