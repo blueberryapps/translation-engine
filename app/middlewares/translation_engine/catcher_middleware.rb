@@ -1,64 +1,68 @@
-class TranslationEngine::CatcherMiddleware
-  REMOVE_QUERY = /\?.*/
-  REPLACE_IDS = /\d+/
+module TranslationEngine
+  class CatcherMiddleware
+    include Request
 
-  def initialize(app)
-    @app = app
-  end
+    REMOVE_QUERY = /\?.*/
+    REPLACE_IDS = /\d+/
 
-  def call(env)
-    if TranslationEngine.use_catcher
-      call_catcher(env)
-    else
-      @app.call(env)
-    end
-  end
-
-  private
-
-  def call_catcher(env)
-    TranslationEngine::Translation.clear_catched
-
-    if env['QUERY_STRING'].include?('translation_release')
-      I18n.backend.release = params(env)['translation_release']
+    def initialize(app)
+      @app = app
     end
 
-    update_translations unless assets_request?(env)
+    def call(env)
+      if TranslationEngine.use_catcher
+        call_catcher(env)
+      else
+        @app.call(env)
+      end
+    end
 
-    response = @app.call(env)
+    private
 
-    send_translations(env)
+    def call_catcher(env)
+      TranslationEngine::Translation.clear_catched
 
-    response
-  end
+      if env['QUERY_STRING'].include?('translation_release')
+        I18n.backend.release = params(env)['translation_release']
+      end
 
-  def assets_request?(env)
-    env['PATH_INFO'] =~ /\/assets/
-  end
+      update_translations unless assets_request?(env)
 
-  def params(env)
-    Rack::Utils.parse_query(env['QUERY_STRING'], '&')
-  end
+      response = @app.call(env)
 
-  def update_translations
-    translation_downloader.update
-  end
+      send_translations(env)
 
-  def send_translations(env)
-    return if TranslationEngine::Translation.catched.empty?
+      response
+    end
 
-    location = env['PATH_INFO'].gsub(REMOVE_QUERY, '').gsub(REPLACE_IDS, ':id')
+    def assets_request?(env)
+      env['PATH_INFO'] =~ /\/assets/
+    end
 
-    data = {
-      location:     location,
-      locale:       I18n.locale,
-      translations: TranslationEngine::Translation.catched.uniq
-    }
+    def params(env)
+      Rack::Utils.parse_query(env['QUERY_STRING'], '&')
+    end
 
-    Thread.new { TranslationEngine::Connection.new.send_translations(data) }
-  end
+    def update_translations
+      translation_downloader.update
+    end
 
-  def translation_downloader
-    @translation_downloader ||= TranslationEngine::Downloader.new
+    def send_translations(env)
+      return if TranslationEngine::Translation.catched.empty?
+
+      location = env['PATH_INFO'].gsub(REMOVE_QUERY, '').gsub(REPLACE_IDS, ':id')
+
+      data = {
+        location:     location,
+        locale:       I18n.locale,
+        translations: TranslationEngine::Translation.catched.uniq
+      }
+
+      Thread.new { TranslationEngine::Connection.new.send_translations(data, remote_ip(env)) }
+    end
+
+    def translation_downloader
+      @translation_downloader ||= TranslationEngine::Downloader.new
+    end
   end
 end

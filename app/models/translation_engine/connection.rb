@@ -4,22 +4,24 @@ class TranslationEngine::Connection
 
   NotFound = Class.new(Exception)
 
-  def send_images(data)
+  def send_images(data, ip_address = nil)
     connection.post do |req|
       req.url '/api/v1/images'
       req.headers['Content-Type']  = 'application/json'
       req.headers['Authorization'] = api_token
+      req.headers['Original-IP-Address'] = ip_address if ip_address.present?
       req.body = data.to_json
     end
   end
 
-  def send_translations(data)
+  def send_translations(data, ip_address = nil)
     Thread.new do
       begin
         puts "Sending translations in separate thread"
         connection(60).post do |req|
           req.url '/api/v1/translations'
-          req.headers['Content-Type']  = 'application/json'
+          req.headers['Content-Type'] = 'application/json'
+          req.headers['Original-IP-Address'] = ip_address if ip_address.present?
           req.headers['Authorization'] = api_token
           req.body = data.to_json
         end
