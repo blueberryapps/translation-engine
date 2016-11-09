@@ -1,31 +1,34 @@
-class TranslationEngine::ScreenshotsMiddleware
+module TranslationEngine
+  class ScreenshotsMiddleware
+    include Request
 
-  URL_PATH = /\A\/translation_engine\/screenshots/
+    URL_PATH = /\A\/translation_engine\/screenshots/
 
-  def initialize(app)
-    @app = app
-  end
-
-  def call(env)
-    if TranslationEngine.use_screenshots && env['PATH_INFO'] =~ URL_PATH
-      handle_translation_request(env)
-    else
-      @app.call(env)
+    def initialize(app)
+      @app = app
     end
-  end
 
-  private
+    def call(env)
+      if TranslationEngine.use_screenshots && env['PATH_INFO'] =~ URL_PATH
+        handle_translation_request(env)
+      else
+        @app.call(env)
+      end
+    end
 
-  def handle_translation_request(env)
-    data = JSON.parse(env["rack.input"].read)
+    private
 
-    TranslationEngine::Connection.new
-      .send_images(data.merge(locale: I18n.locale))
+    def handle_translation_request(env)
+      data = JSON.parse(env["rack.input"].read)
 
-    [
-      200,
-      { 'Content-Type' => 'application/json' },
-      [{ message: 'translations saved' }.to_json]
-    ]
+      TranslationEngine::Connection.new
+        .send_images(data.merge(locale: I18n.locale), remote_ip(env))
+
+      [
+        200,
+        { 'Content-Type' => 'application/json' },
+        [{ message: 'translations saved' }.to_json]
+      ]
+    end
   end
 end
