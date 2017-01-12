@@ -50,14 +50,24 @@ class TranslationEngine::Backend < I18n::Backend::Simple
     end
   end
 
-  def lookup(locale, key, scope = [], options = {})
-    keys = I18n.normalize_keys(locale, key, scope, options[:separator])
-    resolved = super
-    if resolved
-      enhance_translation(resolved, keys)
-    else
-      resolved
+  def resolve(locale, object, subject, options = {})
+    return subject if options[:resolve] == false
+
+    result = catch(:exception) do
+      case subject
+      when Symbol
+        I18n.translate(subject, options.merge(:locale => locale, :throw => true))
+      when Proc
+        date_or_time = options.delete(:object) || object
+        resolve(locale, object, subject.call(date_or_time, options))
+      when nil
+        nil
+      else
+        keys = I18n.normalize_keys(locale, object, options[:scope], options[:separator])
+        enhance_translation(subject, keys)
+      end
     end
+    result unless result.is_a?(I18n::MissingTranslation)
   end
 
   def enhance_translation(value, main_keys, catch_translation = true)
