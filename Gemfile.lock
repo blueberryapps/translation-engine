@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    translation_engine (0.0.3)
+    translation_engine (0.0.4)
       faraday
-      rails (~> 4.2.0)
+      rails (>= 4.2.0)
       rails-assets-html2canvas
 
 GEM
