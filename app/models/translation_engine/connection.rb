@@ -15,21 +15,17 @@ class TranslationEngine::Connection
   end
 
   def send_translations(data, ip_address = nil)
-    Thread.new do
-      begin
-        puts "Sending translations in separate thread"
-        connection(60).post do |req|
-          req.url '/api/v1/translations'
-          req.headers['Content-Type'] = 'application/json'
-          req.headers['Original-IP-Address'] = ip_address if ip_address.present?
-          req.headers['Authorization'] = api_token
-          req.body = data.to_json
-        end
-        puts "Sending translations in separate thread finished"
-      rescue StandardError => e
-        puts "Sending translations failed: #{e.class}: #{e.message}"
-      end
+    puts "Sending translations in separate thread"
+    connection(60).post do |req|
+      req.url '/api/v1/translations'
+      req.headers['Content-Type'] = 'application/json'
+      req.headers['Original-IP-Address'] = ip_address if ip_address.present?
+      req.headers['Authorization'] = api_token
+      req.body = data.to_json
     end
+    puts "Sending translations in separate thread finished"
+  rescue StandardError => e
+    puts "Sending translations failed: #{e.class}: #{e.message}"
   end
 
   def get_releases
