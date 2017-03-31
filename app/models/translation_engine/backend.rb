@@ -33,7 +33,7 @@ class TranslationEngine::Backend < I18n::Backend::Simple
   end
 
   def download_master
-    if (yml_data = connection.get_translations.body)
+    if (yml_data = connection.get_translations.try(:body))
       Rails.logger.info { 'Updating from translation server - master' }
       YAML.load(yml_data).each do |locale, translations|
         store_translations locale, translations
@@ -42,7 +42,7 @@ class TranslationEngine::Backend < I18n::Backend::Simple
   end
 
   def download_release
-    if (yml_data = connection.get_release(release).body)
+    if (yml_data = connection.get_release(release).try(:body))
       Rails.logger.info { "Updating from translation server - #{release}" }
       YAML.load(yml_data).each do |locale, translations|
         store_translations locale, translations
