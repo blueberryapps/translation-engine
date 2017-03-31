@@ -30,7 +30,11 @@ module TranslationEngine
 
       response = @app.call(env)
 
-      send_translations(env)
+      unless TranslationEngine::Translation.catched.empty?
+        location = env['PATH_INFO'].gsub(REMOVE_QUERY, '').gsub(REPLACE_IDS, ':id')
+        ip       = remote_ip(env)
+        TranslationEngine::SendTranslationsJob.perform_later(location, ip)
+      end
 
       response
     end
@@ -45,20 +49,6 @@ module TranslationEngine
 
     def update_translations
       translation_downloader.update
-    end
-
-    def send_translations(env)
-      return if TranslationEngine::Translation.catched.empty?
-
-      location = env['PATH_INFO'].gsub(REMOVE_QUERY, '').gsub(REPLACE_IDS, ':id')
-
-      data = {
-        location:     location,
-        locale:       I18n.locale,
-        translations: TranslationEngine::Translation.catched.uniq
-      }
-
-      Thread.new { TranslationEngine::Connection.new.send_translations(data, remote_ip(env)) }
     end
 
     def translation_downloader
