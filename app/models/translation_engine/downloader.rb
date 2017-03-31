@@ -26,7 +26,7 @@ class TranslationEngine::Downloader
   def store_release(release)
     locale = release.split('_')[0...-1].join('_')
     filename = releases_dir.join("#{locale.downcase}.yml")
-    if (yml_data = connection.get_release(release).body)
+    if (yml_data = connection.get_release(release).try(:body))
       Rails.logger.info { "Storing release #{release} to #{filename}" }
       write(filename, yml_data)
     end
@@ -55,7 +55,7 @@ class TranslationEngine::Downloader
   def receive_translations
     return if self.class.etag?(connection.get_translations_head[:etag])
 
-    connection.get_translations.body
+    connection.get_translations.try(:body)
   end
 
   def releases_dir
