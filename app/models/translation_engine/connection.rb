@@ -71,11 +71,15 @@ class TranslationEngine::Connection
   private
 
   def connection(timeout = TranslationEngine.timeout)
-    Thread.current[:translation_server_connection] ||= Faraday.new(:url => TranslationEngine.api_host) do |faraday|
-      faraday.use TranslationEngine::ConnectionExceptionMiddleware
-      faraday.adapter Faraday.default_adapter
-      faraday.options.timeout      = timeout
-      faraday.options.open_timeout = TranslationEngine.timeout * 4
+    begin
+      Thread.current[:translation_server_connection] ||= Faraday.new(:url => TranslationEngine.api_host) do |faraday|
+        faraday.use TranslationEngine::ConnectionExceptionMiddleware
+        faraday.adapter Faraday.default_adapter
+        faraday.options.timeout      = timeout
+        faraday.options.open_timeout = TranslationEngine.timeout * 4
+      end
+    rescue StandardError => e
+      puts "Connection timeouted: #{e.class}: #{e.message}"
     end
   end
 
