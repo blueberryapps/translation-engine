@@ -5,7 +5,7 @@ class TranslationEngine::Connection
   NotFound = Class.new(Exception)
 
   def send_images(data, ip_address = nil)
-    connection.post do |req|
+    connection(60).post do |req|
       req.url '/api/v1/images'
       req.headers['Content-Type']  = 'application/json'
       req.headers['Authorization'] = api_token

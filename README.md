@@ -26,8 +26,15 @@ TranslationEngine.config do |config|
   # when something changed (default is false)
   config.use_catcher      = true
 
+  # for production envs you don't want to send translations
+  # so if use_catcher is true you can disable sending them by this option:
+  config.disable_sending_translations = true
+
   # Timeout for connecting to translation server
   # config.timeout = 5
+
+  # Set time between asking translation server for new data, (default is 0)
+  config.cache_timeout = 60 # ask translation server every 60s for new data
 
   # If true TranslationEngine will throw exceptions on connection problems
   # If false TranslationEngine will just log exception to Rails.logger
@@ -130,3 +137,10 @@ and then it sends them into Translation Server.
 
 Screenshots middleware takes highlights and images which sends into Translation
 Server.
+
+## Publishing
+
+```
+gem build translation_engine.gemspec
+gem push translation_engine-0.0.5.gem
+```
