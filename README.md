@@ -137,3 +137,10 @@ and then it sends them into Translation Server.
 
 Screenshots middleware takes highlights and images which sends into Translation
 Server.
+
+## Publishing
+
+```
+gem build translation_engine.gemspec
+gem push translation_engine-0.0.5.gem
+```
