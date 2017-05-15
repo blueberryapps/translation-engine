@@ -10,8 +10,12 @@ class TranslationEngine::Downloader
     response
   end
 
+  def self.cache_timeout
+    @cache_timeout
+  end
+
   def update
-    return nil if @cache_timeout && Time.now < @cache_timeout
+    return nil if self.class.cache_timeout && Time.now < self.class.cache_timeout
     return nil if self.class.etag?(connection.get_translations_head[:etag])
     I18n.backend.reload!
   end
