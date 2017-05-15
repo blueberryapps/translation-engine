@@ -26,11 +26,19 @@ module TranslationEngine
         I18n.backend.release = params(env)['translation_release']
       end
 
-      update_translations unless assets_request?(env)
+      begin
+        update_translations unless assets_request?(env)
+      rescue StandardError => e
+        puts "Unable to update translations #{e.class} #{e.message}"
+      end
 
       response = @app.call(env)
 
-      send_translations(env)
+      begin
+        send_translations(env)
+      rescue StandardError => e
+        puts "Unable to send new translations #{e.class} #{e.message}"
+      end
 
       response
     end

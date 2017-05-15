@@ -5,7 +5,7 @@ class TranslationEngine::Connection
   NotFound = Class.new(Exception)
 
   def send_images(data, ip_address = nil)
-    connection.post do |req|
+    connection(60).post do |req|
       req.url '/api/v1/images'
       req.headers['Content-Type']  = 'application/json'
       req.headers['Authorization'] = api_token
@@ -71,15 +71,11 @@ class TranslationEngine::Connection
   private
 
   def connection(timeout = TranslationEngine.timeout)
-    begin
-      Thread.current[:translation_server_connection] ||= Faraday.new(:url => TranslationEngine.api_host) do |faraday|
-        faraday.use TranslationEngine::ConnectionExceptionMiddleware
-        faraday.adapter Faraday.default_adapter
-        faraday.options.timeout      = timeout
-        faraday.options.open_timeout = TranslationEngine.timeout * 4
-      end
-    rescue StandardError => e
-      puts "Connection timeouted: #{e.class}: #{e.message}"
+    Thread.current[:translation_server_connection] ||= Faraday.new(:url => TranslationEngine.api_host) do |faraday|
+      faraday.use TranslationEngine::ConnectionExceptionMiddleware
+      faraday.adapter Faraday.default_adapter
+      faraday.options.timeout      = timeout
+      faraday.options.open_timeout = TranslationEngine.timeout * 4
     end
   end
 
