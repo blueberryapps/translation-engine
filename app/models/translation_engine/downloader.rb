@@ -6,10 +6,12 @@ class TranslationEngine::Downloader
     response = @current_etag == etag
     Rails.logger.info { "Translations are up to date" } if response
     @current_etag = etag
+    @cache_timeout = Time.now + TranslationEngine.cache_timeout
     response
   end
 
   def update
+    return nil if @cache_timeout && Time.now < @cache_timeout
     return nil if self.class.etag?(connection.get_translations_head[:etag])
     I18n.backend.reload!
   end

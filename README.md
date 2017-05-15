@@ -33,6 +33,9 @@ TranslationEngine.config do |config|
   # Timeout for connecting to translation server
   # config.timeout = 5
 
+  # Set time between asking translation server for new data, (default is 0)
+  config.cache_timeout = 60 # ask translation server every 60s for new data
+
   # If true TranslationEngine will throw exceptions on connection problems
   # If false TranslationEngine will just log exception to Rails.logger
   config.raise_exceptions = Rails.env.development?

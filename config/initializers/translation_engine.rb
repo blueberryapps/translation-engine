@@ -5,5 +5,6 @@ TranslationEngine.config do |config|
   config.use_catcher      = false
   config.disable_sending_translations = false
   config.timeout          = 5
+  config.cache_timeout    = 0
   config.raise_exceptions = Rails.env.development?
 end
