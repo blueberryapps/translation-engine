@@ -34,10 +34,12 @@ module TranslationEngine
 
       response = @app.call(env)
 
-      begin
-        send_translations(env)
-      rescue StandardError => e
-        puts "Unable to send new translations #{e.class} #{e.message}"
+      unless TranslationEngine.disable_sending_translations
+        begin
+          send_translations(env)
+        rescue StandardError => e
+          puts "Unable to send new translations #{e.class} #{e.message}"
+        end
       end
 
       response

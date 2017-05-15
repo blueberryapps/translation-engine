@@ -26,6 +26,10 @@ TranslationEngine.config do |config|
   # when something changed (default is false)
   config.use_catcher      = true
 
+  # for production envs you don't want to send translations
+  # so if use_catcher is true you can disable sending them by this option:
+  config.disable_sending_translations = true
+
   # Timeout for connecting to translation server
   # config.timeout = 5
 
