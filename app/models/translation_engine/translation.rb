@@ -58,7 +58,7 @@ class TranslationEngine::Translation
   end
 
   def to_s
-    if TranslationEngine.use_screenshots && @text.is_a?(String)
+    if TranslationEngine.use_screenshots && @text.is_a?(String) && !full_key.include?('.routes')
       "--TRANSLATION--#{full_key}--#{@text}"
     else
       @text
