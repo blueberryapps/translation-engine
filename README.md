@@ -1,4 +1,4 @@
-# TranslationEngine
+# TranslationEngine [![Dependency Status](https://dependencyci.com/github/blueberryapps/translation-engine/badge)](https://dependencyci.com/github/blueberryapps/translation-engine)
 
 ```
 gem 'translation_engine', git: 'https://github.com/blueberryapps/translation-engine.git'
