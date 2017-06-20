@@ -24,6 +24,40 @@ module TranslationEngine
       config.after_initialize do |app|
         if TranslationEngine.use_catcher || TranslationEngine.use_screenshots
           I18n.backend = TranslationEngine::Backend.new
+
+          I18n::Backend::Fallbacks.module_eval do
+            # Fixing problem in Fallback Backend!
+            # https://github.com/svenfuchs/i18n/blob/master/lib/i18n/backend/fallbacks.rb#L37
+            def translate(locale, key, options = {})
+              return super unless options.fetch(:fallback, true)
+              return super if (@fallback_locked ||= false)
+              default = extract_non_symbol_default!(options) if options[:default]
+
+              begin
+                @fallback_locked = true
+                I18n.fallbacks[locale].each do |fallback|
+                  begin
+                    catch(:exception) do
+                      result = super(fallback, key, options)
+                      return result if (result.nil? && options.key?(:default) && options[:default].nil?) || !result.nil?
+                    end
+                  rescue I18n::InvalidLocale
+                    # we do nothing when the locale is invalid, as this is a fallback anyways.
+                  end
+                end
+              ensure
+                @fallback_locked = false
+              end
+
+              # Original code is:
+              # return super(locale, nil, options.merge(:default => default)) if default
+              # And fix is adding key:
+              return super(locale, key, options.merge(:default => default)) if default
+
+              throw(:exception, I18n::MissingTranslation.new(locale, key, options))
+            end
+          end
+
         end
       end
     end
