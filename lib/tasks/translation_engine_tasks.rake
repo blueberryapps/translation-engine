@@ -64,18 +64,18 @@ namespace :translation_engine do
       unless file.include?('faker')
         hash = YAML.load_file(file) || {}
         to_dotted_hash(hash).each do |keys, text|
-          Translation.catch text, keys
+          TranslationEngine::Translation.catch text, keys
         end
       end
     end
 
-    if Translation.catched.any?
+    if TranslationEngine::Translation.catched.any?
       data = {
         locale:       locale,
-        translations: Translation.catched.uniq
+        translations: TranslationEngine::Translation.catched.uniq
       }
-      puts "Send #{Translation.catched.size} translations"
-      Connection.new.send_translations(data)
+      puts "Send #{TranslationEngine::Translation.catched.size} translations"
+      TranslationEngine::Connection.new.send_translations(data)
     else
       puts "No translations was found and send"
     end
