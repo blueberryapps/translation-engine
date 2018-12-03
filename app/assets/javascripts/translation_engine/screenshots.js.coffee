@@ -1,4 +1,4 @@
-#= require html2canvas
+#= require ./html2canvas
 
 class TranslationEngine
 
