@@ -1,5 +1,3 @@
-require 'rails-assets-html2canvas'
-
 module TranslationEngine
   class Engine < ::Rails::Engine
     isolate_namespace TranslationEngine
