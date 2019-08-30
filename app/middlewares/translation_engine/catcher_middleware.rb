@@ -10,7 +10,7 @@ module TranslationEngine
     end
 
     def call(env)
-      if TranslationEngine.use_catcher
+      if TranslationEngine.use_catcher && !assets_request?(env)
         call_catcher(env)
       else
         @app.call(env)
@@ -27,7 +27,7 @@ module TranslationEngine
       end
 
       begin
-        update_translations unless assets_request?(env)
+        update_translations
       rescue StandardError => e
         puts "Unable to update translations #{e.class} #{e.message}"
       end
@@ -46,7 +46,9 @@ module TranslationEngine
     end
 
     def assets_request?(env)
-      env['PATH_INFO'] =~ /\/assets/
+      env['PATH_INFO'] =~ /\/assets/ ||                  # AssetPipeline
+        env['PATH_INFO'] =~ /\/rails\/active_storage/ || # ActiveStorage
+        env['PATH_INFO'] =~ /\/attachments/              # Refile
     end
 
     def params(env)
